@@ -27,10 +27,11 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-          'Compra relizada com sucesso !',
-          textAlign: TextAlign.center,
-        )),
+          content: Text(
+            'Compra relizada com sucesso !',
+            textAlign: TextAlign.center,
+          ),
+        ),
       );
     }
   }
