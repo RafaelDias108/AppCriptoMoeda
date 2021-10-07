@@ -1,3 +1,4 @@
+import 'package:cripto_moedas_app/configs/app_settings.dart';
 import 'package:cripto_moedas_app/models/moeda.dart';
 import 'package:cripto_moedas_app/pages/moedas_detalhes_page.dart';
 import 'package:cripto_moedas_app/repositories/favoritas_reporitory.dart';
@@ -15,12 +16,25 @@ class MoedaCard extends StatefulWidget {
 }
 
 class _MoedaCardState extends State<MoedaCard> {
-  NumberFormat real = NumberFormat.currency(locale: 'pt-BR', name: 'R\$');
+  ///formata a moeda
+  late NumberFormat real;
+
+  ///fica armazenado as preferencias da localização
+  late Map<String, String> localizacao;
 
   static Map<String, Color> precoColor = <String, Color>{
     'up': Colors.teal,
     'down': Colors.indigo,
   };
+
+  ///inicialização da localização e do NumberFormat
+  readNumberFormat() {
+    localizacao = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(
+      locale: localizacao['locale'],
+      name: localizacao['name'],
+    );
+  }
 
   abrirDetalhes() {
     Navigator.push(
@@ -48,6 +62,9 @@ class _MoedaCardState extends State<MoedaCard> {
 
   @override
   Widget build(BuildContext context) {
+    /// para carregar o locale
+    readNumberFormat();
+
     return Card(
       margin: EdgeInsets.only(top: 12),
       elevation: 2,

@@ -1,3 +1,4 @@
+import 'package:cripto_moedas_app/configs/app_settings.dart';
 import 'package:cripto_moedas_app/models/moeda.dart';
 import 'package:cripto_moedas_app/pages/moedas_detalhes_page.dart';
 import 'package:cripto_moedas_app/repositories/favoritas_reporitory.dart';
@@ -15,17 +16,50 @@ class MoedasPage extends StatefulWidget {
 
 class _MoedasPageState extends State<MoedasPage> {
   final tabela = MoedaRepository.tabela;
-
-  NumberFormat real = NumberFormat.currency(locale: 'pt-br', name: 'R\$');
-
+  late NumberFormat real;
+  late Map<String, String> localizacao;
   List<Moeda> selecionadas = [];
   late FavoritasRepository favoritas;
+
+  ///inicialização da localização e do NumberFormat
+  readNumberFormat() {
+    localizacao = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(
+      locale: localizacao['locale'],
+      name: localizacao['name'],
+    );
+  }
+
+  ///botão para alterar a localização
+  changeLanguageButton() {
+    final locale = localizacao['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
+    final name = localizacao['locale'] == 'pt_BR' ? '\$' : 'R\$';
+
+    return PopupMenuButton(
+      icon: Icon(Icons.language),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.swap_vert),
+            title: Text('Usar $locale'),
+            onTap: () {
+              context.read<AppSettings>().setlocale(locale, name);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   appBarDinamica() {
     if (selecionadas.isEmpty) {
       return AppBar(
         title: Text('Cripto Moedas'),
         centerTitle: true,
+        actions: [
+          changeLanguageButton(),
+        ],
       );
     } else {
       return AppBar(
@@ -69,8 +103,11 @@ class _MoedasPageState extends State<MoedasPage> {
 
   @override
   Widget build(BuildContext context) {
-    favoritas = Provider.of<FavoritasRepository>(context);
-    //favoritas = context.watch<FavoritasRepository>();
+    //favoritas = Provider.of<FavoritasRepository>(context);
+    favoritas = context.watch<FavoritasRepository>();
+
+    /// para carregar o locale
+    readNumberFormat();
 
     return Scaffold(
       appBar: appBarDinamica(),
