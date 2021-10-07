@@ -1,7 +1,9 @@
+import 'package:cripto_moedas_app/configs/app_settings.dart';
 import 'package:cripto_moedas_app/models/moeda.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MoedasDetalhesPage extends StatefulWidget {
   Moeda moeda;
@@ -13,12 +15,25 @@ class MoedasDetalhesPage extends StatefulWidget {
 }
 
 class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
-  NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  //NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  late NumberFormat real;
+
+  ///fica armazenado as preferencias da localização
+  late Map<String, String> localizacao;
 
   final _form = GlobalKey<FormState>();
   final _valor = TextEditingController();
 
   double quantidade = 0;
+
+  ///inicialização da localização e do NumberFormat
+  readNumberFormat() {
+    localizacao = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(
+      locale: localizacao['locale'],
+      name: localizacao['name'],
+    );
+  }
 
   comprar() {
     if (_form.currentState!.validate()) {
@@ -38,6 +53,10 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
 
   @override
   Widget build(BuildContext context) {
+    ///
+    readNumberFormat();
+
+    ///
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.moeda.nome),

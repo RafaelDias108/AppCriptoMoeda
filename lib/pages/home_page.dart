@@ -2,6 +2,8 @@ import 'package:cripto_moedas_app/pages/favoritos_pages.dart';
 import 'package:cripto_moedas_app/pages/moedas_page.dart';
 import 'package:flutter/material.dart';
 
+import 'configuracoes_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -35,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           MoedasPage(),
           FavoritoPage(),
+          ConfiguracoesPage(),
         ],
         onPageChanged: setPaginaAtual,
       ),
@@ -58,6 +61,12 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.indigo[900],
               ),
               label: 'Favoritos'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.settings,
+                size: 30,
+              ),
+              label: 'Conta'),
         ],
         onTap: (pagina) {
           paginaController.animateToPage(
